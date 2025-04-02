@@ -8,7 +8,7 @@ const FormData = require("form-data");
 require("dotenv").config();
 
 const app = express();
-const port = 5001;
+const port = process.env.PORT || 5001;
 
 app.use(cors());
 app.use(express.json());
@@ -100,7 +100,7 @@ app.get("/history", (req, res) => {
       .readdirSync(dataDir)
       .filter((f) => f.startsWith("saved-") && f.endsWith(".json"))
       .sort()
-      .reverse(); // 最新順に
+      .reverse();
 
     res.json(files);
   } catch (error) {
@@ -109,9 +109,6 @@ app.get("/history", (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`🧠 Whisperサーバー起動中：http://localhost:${port}`);
-});
 // 📥 ファイル読み込みエンドポイント
 app.get("/load/:filename", (req, res) => {
   try {
@@ -130,3 +127,6 @@ app.get("/load/:filename", (req, res) => {
     res.status(500).json({ error: "読み込みに失敗しました" });
   }
 });
+
+app.listen(port, () => {
+  console.log(`🧠
