@@ -8,14 +8,20 @@ const FormData = require("form-data");
 require("dotenv").config();
 
 const app = express();
-const port = process.env.PORT || 5001;
+const port = process.env.PORT || 5001; // ← Render 用に PORT を process.env.PORT に変更
 
 app.use(cors());
 app.use(express.json());
 
+// 📂 uploads/ ディレクトリの存在確認と作成
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
 // .webmで保存（Whisper対応）
 const storage = multer.diskStorage({
-  destination: "uploads/",
+  destination: uploadDir,
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}.webm`);
   }
@@ -100,7 +106,7 @@ app.get("/history", (req, res) => {
       .readdirSync(dataDir)
       .filter((f) => f.startsWith("saved-") && f.endsWith(".json"))
       .sort()
-      .reverse();
+      .reverse(); // 最新順に
 
     res.json(files);
   } catch (error) {
@@ -128,5 +134,7 @@ app.get("/load/:filename", (req, res) => {
   }
 });
 
+// 🚀 サーバー起動
 app.listen(port, () => {
-  console.log(`🧠
+  console.log(`🧠 Whisperサーバー起動中：http://localhost:${port}`);
+});
