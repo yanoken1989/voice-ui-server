@@ -57,6 +57,9 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.listen(5001, () => {
-  console.log("🧠 Whisperサーバー起動中：http://localhost:5001");
+const PORT = process.env.PORT || 5001;
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Whisperサーバー起動: http://0.0.0.0:${PORT}`);
 });
+
